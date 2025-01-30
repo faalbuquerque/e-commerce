@@ -10,9 +10,7 @@ API para gerenciamento do um carrinho de compras de e-commerce desenvolvida em R
 - postgres 16
 - redis 7.0.15
 
-### Como executar o projeto
-
-## Executando a app com o docker
+## Executando a aplicação com o docker
 Dado que todas as as ferramentas estão instaladas e configuradas:
 
 Para gerar containers:
@@ -25,17 +23,16 @@ Para iniciar os containers:
 docker-compose up
 ```
 
-Para rodar os testes :
-```bash
-bundle exec rails server
-```
-
-Executar os testes:
+Para executar os testes:
 ```bash
 docker-compose exec web bash -c 'RAILS_ENV=test bundle exec rspec'
+
+ou
+
+docker-compose up test
 ```
 
-Executar seeds:
+Para gerar seeds:
 ```bash
 docker-compose exec web bash -c 'bundle exec rails db:seed'
 ```
@@ -152,6 +149,23 @@ Response:
 Endpoint para excluir um produto do do carrinho.
 
 ROTA: `/cart/:product_id`
+
+Response:
+```js
+{
+	"id": 48,
+	"products": [
+		{
+			"id": 136,
+			"name": "caneta",
+			"quantity": 5,
+			"unit_price": "10.0",
+			"total_price": "50.0"
+		}
+	],
+	"total_price": "50.0"
+}
+```
 
 
 #### Implementaçoes adicionais:
