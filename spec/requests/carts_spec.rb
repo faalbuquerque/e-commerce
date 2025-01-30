@@ -9,16 +9,16 @@ RSpec.describe '/carts', type: :request do
   end
 
   describe 'GET /cart' do
-    let(:caneta) { create(:product, name: 'Caneta', price: 10.0) }
-    let(:lapis) { create(:product, name: 'Lapis', price: 5.0) }
-    let(:cart_item_1) { create(:cart_item, cart: cart, product: caneta, quantity: 1) }
-    let(:cart_item_2) { create(:cart_item, cart: cart, product: lapis, quantity: 1) }
+    let(:pen) { create(:product, name: 'Caneta', price: 10.0) }
+    let(:pencil) { create(:product, name: 'Lapis', price: 5.0) }
+    let(:cart_item_1) { create(:cart_item, cart: cart, product: pen, quantity: 1) }
+    let(:cart_item_2) { create(:cart_item, cart: cart, product: pencil, quantity: 1) }
 
-    it 'show cart' do
+    it 'shows cart' do
       result = { 'id' => cart.id,
                  'products' => [
-                    { 'id' => caneta.id, 'name' => "#{cart_item_1.product.name}", 'quantity' => 1, 'unit_price' => '10.0', 'total_price' => '10.0' },
-                    { 'id' => lapis.id, 'name' => "#{cart_item_2.product.name}", 'quantity' => 1, 'unit_price' => '5.0', 'total_price' => '5.0' },
+                    { 'id' => pen.id, 'name' => "#{cart_item_1.product.name}", 'quantity' => 1, 'unit_price' => '10.0', 'total_price' => '10.0' },
+                    { 'id' => pencil.id, 'name' => "#{cart_item_2.product.name}", 'quantity' => 1, 'unit_price' => '5.0', 'total_price' => '5.0' },
                   ],
                  'total_price' => '15.0'
                }
@@ -40,7 +40,7 @@ RSpec.describe '/carts', type: :request do
       }
     end
 
-    it 'create cart' do
+    it 'creates cart' do
       result = { 'id' => cart.id,
                  'products' => [
                     { 'id' => caneta.id, 'name' => "Caneta", 'quantity' => 1, 'unit_price' => '10.0', 'total_price' => '10.0' },
@@ -71,5 +71,16 @@ RSpec.describe '/carts', type: :request do
         expect { subject }.to change { cart_item.reload.quantity }.by(2)
       end
     end
+  end
+
+  describe 'DELETE /cart' do
+    let(:cart) { create(:cart) }
+    let(:product) { create(:product, name: 'Caneta', price: 10.0) }
+
+    before { create(:cart_item, cart: cart, product: product, quantity: 1) }
+
+    subject { delete "/cart/#{product.id}", as: :json }
+
+    it { expect { subject }.to change { cart.cart_items.count }.by(-1) }
   end
 end
