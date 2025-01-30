@@ -1,8 +1,13 @@
-#!/bin/bash -e
+#!/bin/bash
 
-# If running the rails server then create or migrate existing database
-if [ "${1}" == "./bin/rails" ] && [ "${2}" == "server" ]; then
-  ./bin/rails db:prepare
+# instructs bash to immediately exit if any command has a non-zero exit status
+set -e
+
+./bin/bundle check || ./bin/bundle install --jobs 5 --retry 5
+
+# remove server process if needed
+if [ -f ./tmp/pids/server.pid ]; then
+  rm ./tmp/pids/server.pid
 fi
 
 ./bin/rails db:create
