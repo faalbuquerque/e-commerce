@@ -43,7 +43,7 @@ services:
     test:
         build: .
         entrypoint: /rails/bin/test-entrypoint
-        command: bundle exec rspec
+        command: bash -c "RAILS_ENV=test bundle exec rspec"
         volumes:
             - .:/rails
         depends_on:
