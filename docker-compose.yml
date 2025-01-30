@@ -1,5 +1,3 @@
-version: '3'
-
 services:
     db:
         image: postgres:16-alpine
@@ -15,17 +13,39 @@ services:
         ports:
         - '6379:6379'
         volumes:
-        - redis_data:/data  
+        - redis_data:/data 
     web:
-        ## TODO
+        build: .
+        stdin_open: true
+        tty: true
+        entrypoint: /rails/bin/docker-entrypoint
+        command: bash -c "/rails/bin/rails server -p 3000 -b '0.0.0.0'"
+        environment:
+            TZ: America/Fortaleza
+            TERM: xterm-256color
+            DATABASE_URL: postgresql://postgres:password@db:5432/store_test
+            REDIS_URL: redis://redis:6379/0
+        depends_on:
+            - db
+        links:
+            - db
+            - redis
+        volumes:
+            - .:/rails
+        ports:
+            - '3000:3000'
+        expose:
+            - '3000'
     test:
         build: .
+        entrypoint: /rails/bin/test-entrypoint
         command: bundle exec rspec
         volumes:
             - .:/rails
         depends_on:
+            - web
             - db
-            - redis 
+            - redis
         environment:
             - DATABASE_URL: postgresql://postgres:password@db:5432/myapp_test
             - REDIS_URL: redis://redis:6379/0

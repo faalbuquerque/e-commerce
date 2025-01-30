@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# instructs bash to immediately exit if any command has a non-zero exit status
+set -e
+
+./bin/bundle check || ./bin/bundle install --jobs 5 --retry 5
+
+./bin/rails db:create
+
+echo '===== Running migrations ======'
+./bin/rails db:migrate
+echo '===== End of migrations ======'
+
+# command from docker-compose
+exec "$@"
