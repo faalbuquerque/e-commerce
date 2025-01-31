@@ -10,5 +10,5 @@
 :scheduler:
   :schedule:
     remove_expired_carts:
-      cron: '0 * * * * *'   # Runs once per minute
+      cron: '0 0 * * *'  # Runs daily at midnight
       class: RemoveExpiredCartsJob
